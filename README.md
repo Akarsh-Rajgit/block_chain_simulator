@@ -1,5 +1,5 @@
- Blockchain Simulation 
-blockcahin consists of blocks => block:
+ Blockchain Simulation : 
+blockchain consists of blocks => block:
 -> header:
 1) previous block address hash.
 2) time stamp of the block.
