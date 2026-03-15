@@ -20,8 +20,4 @@ blockcahin consists of blocks => block:
 2) Verifying the previous hash and time stamp for validation of the block
 3) data is going to be :
         a)name of the miner
-        b)time at which mining began. [The mining time and the block time stamp should be close to each other(at least by 5 mins) for validation.]
-
-
-    return 0;
-}
+        b)time at which mining began. [The mining time and the block time stamp should be close to each other(at least by 5 minutes) for validation.]
