@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Monitor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 { color: #00ff88; }
+
+        .controls { margin-bottom: 30px; }
+
+        button {
+            background-color: #00ff88;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #00cc6e; }
+
+        /* The Block Container */
+        #blockchain-container {
+            display: flex;
+            flex-direction: column-reverse; /* Newest blocks at the top */
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Individual Block Styling */
+        .block-card {
+            background-color: #2d2d2d;
+            border: 2px solid #444;
+            border-left: 10px solid #00ff88; /* Visual "chain" accent */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .block-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ff88;
+            border-bottom: 1px solid #444;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .block-data {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .label { color: #888; font-weight: bold; }
+        .value { color: #ddd; word-break: break-all; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Blockchain Monitor</h1>
+    
+    <div class="controls">
+        <button onclick="load()">Mine & Fetch New Block</button>
+    </div>
+
+    <div id="blockchain-container">
+        </div>
+
+    <script>
+        function load() {
+            fetch("http://localhost:3000/status")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.latestBlock) {
+                        addBlockToUI(data.latestBlock);
+                    }
+                })
+                .catch(err => console.error("Error fetching data:", err));
+        }
+
+        function addBlockToUI(block) {
+            const container = document.getElementById('blockchain-container');
+            
+            // Create the block card
+            const blockDiv = document.createElement('div');
+            blockDiv.className = 'block-card';
+
+            // Set the Header
+            const header = document.createElement('div');
+            header.className = 'block-header';
+            header.textContent = `BLOCK #${block.index}`;
+
+            // Set the Body Data
+            const body = document.createElement('div');
+            body.className = 'block-data';
+            body.innerHTML = `
+    <div><span class="label">HASH:</span> <span class="value">${block.hash}</span></div>
+    <div><span class="label">PREV HASH:</span> <span class="value">${block.prevHash}</span></div>
+    <div style="margin-top: 10px; border-top: 1px dashed #444; padding-top: 10px;">
+        <div><span class="label">MERKLE ROOT:</span> <span class="value">${block.merkleRoot}</span></div>
+        <div><span class="label">NONCE:</span> <span class="value" style="color: #ddd;">${block.nonce}</span></div>
+    </div>
+    <div style="font-size: 0.7rem; color: #ddd; margin-top: 5px;">TIMESTAMP: ${new Date().toLocaleTimeString()}</div>
+`;
+
+            blockDiv.appendChild(header);
+            blockDiv.appendChild(body);
+            
+            // Add to the top of the container
+            container.appendChild(blockDiv);
+        }
+    </script>
+</body>
+</html>
